@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  DETAILS | LEAFORA
+{% endblock %}
+
+{% block content %}
+  <section class="book-details">
+    <div class="container">
+      <!-- Book Main Info -->
+      <div class="book-main">
+        <div class="book-image">
+          <img src="{{ url_for('static', filename='images/Book/' ~ book.image) }}" alt="Book" />
+        </div>
+
+        <div class="book-content">
+          <h1 class="book-title">{{ book.title }}</h1>
+          <p class="book-author">by {{ book.author }}</p>
+
+          <p class="book-meta">
+            <span>Category:</span> {{ book.category }} |
+            <span>Condition:</span> {{ book.condition }} |
+            <span>Location:</span> {{ book.location }}
+          </p>
+
+          <p class="book-description">{{ book.description }}</p>
+
+          <!-- Pricing -->
+          <div class="price-box">
+            <div class="price-item">
+              <h4>Buy Price</h4>
+              <p>BDT {{ book.buy_price }}</p>
+            </div>
+            <div class="price-item">
+              <h4>Rent Price</h4>
+              <p>
+                {% if book.rent_price %}
+                  BDT {{ book.rent_price }} / month
+                {% else %}
+                  Not Available
+                {% endif %}
+              </p>
+            </div>
+          </div>
+
+          <!-- Actions -->
+<!-- Actions -->
+<div class="action-buttons">
+    <!-- Buy Now -->
+    <form method="POST" action="{{ url_for('create_order', book_id=book.id, order_type='buy') }}">
+        <button type="submit" class="btn-primary" style="margin-top: 10px;">Buy Now</button>
+    </form>
+
+    {% if book.rent_price %}
+    <!-- Rent Book -->
+    <form method="POST" action="{{ url_for('create_order', book_id=book.id, order_type='rent') }}" class="rent-form">
+
+        <select name="rent_months" id="rent_months" class="custom-select">
+            <option value="1">1 Month</option>
+            <option value="2">2 Months</option>
+            <option value="3">3 Months</option>
+        </select>
+        <button type="submit" class="btn-secondary">Rent Book</button>
+    </form>
+    {% endif %}
+</div>
+
+
+      <!-- Reviews Section -->
+      <div class="reviews">
+        <h3>Reviews</h3>
+        {% for review in reviews %}
+          <div class="review-card">
+            <p class="review-text">
+              <span style="color: #F5C50C;">
+                {% for i in range(review.rating) %}
+                  ★
+                {% endfor %}
+              </span><br />
+              {{ review.comment }}
+            </p>
+            <p class="reviewer">— {{ review.full_name }}</p>
+          </div>
+        {% endfor %}
+        {% if reviews|length == 0 %}
+          <p>No reviews yet. Be the first to review this book!</p>
+        {% endif %}
+      </div>
+
+      <!-- Review Form -->
+      <div class="review-form">
+        <h3>Leave a Review</h3>
+        <form method="POST" action="{{ url_for('add_review', book_id=book.id) }}">
+          <div class="star-rating">
+            {% for i in range(5, 0, - 1) %}
+              <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}" required />
+              <label for="star{{ i }}">★</label>
+            {% endfor %}
+          </div>
+
+          <div class="form-group">
+            <textarea name="comment" placeholder="Write your review here..." rows="4" required></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary">Submit Review</button>
+        </form>
+      </div>
+    </div>
+  </section>
+{% endblock %}

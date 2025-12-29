@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}
+EDIT BOOK | LEAFORA
+{% endblock %}
+
+{% block content %}
+<section class="profile-section">
+    <div class="container">
+        <h1 class="page-title" style="margin-bottom: 40px;">Edit Book</h1>
+
+        <div class="profile-card" style="max-width: 700px; margin: auto;">
+            <form method="POST" enctype="multipart/form-data">
+                <label>Book Name</label>
+                <input type="text" name="title" value="{{ book.title }}" required>
+
+                <label>Author</label>
+                <input type="text" name="author" value="{{ book.author }}" required>
+
+                <label>Category</label>
+                <input type="text" name="category" value="{{ book.category }}" required>
+
+                <label>Description</label>
+                <textarea name="description" rows="4">{{ book.description }}</textarea>
+
+                <label>Condition</label>
+                <select name="condition" required>
+                <option value="Like New" {{ 'selected' if book.condition == 'Like New' else '' }}>Like New</option>
+                <option value="Good" {{ 'selected' if book.condition == 'Good' else '' }}>Good</option>
+                <option value="Used" {{ 'selected' if book.condition == 'Used' else '' }}>Used</option>
+                </select>
+
+
+                <label>Sell Price (BDT)</label>
+                <input type="number" name="sell_price" value="{{ book.buy_price }}" required>
+
+                <label>Rent Price (BDT / month)</label>
+                <input type="number" name="rent_price" value="{{ book.rent_price if book.rent_price else '' }}">
+
+                <label>Location</label>
+                <input type="text" name="location" value="{{ book.location }}" required>
+
+                <label>Book Cover</label>
+                <input type="file" name="cover_image" accept="image/*">
+
+                {% if book.image %}
+                <p>Current Cover:</p>
+                <img src="{{ url_for('static', filename='images/Book/' ~ book.image) }}" alt="Book Cover" style="max-width: 150px;">
+                {% endif %}
+
+                <div style="margin-top: 20px;">
+                    <button type="submit" class="btn-primary">Update Book</button>
+                    <a href="{{ url_for('profile') }}" class="btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

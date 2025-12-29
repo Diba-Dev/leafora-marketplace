@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  ADMIN | LEAFORA
+{% endblock %}
+
+{% block content %}
+  <section class="admin-section">
+    <div class="container">
+      <h1 class="page-title" style="margin-bottom: 50px;">Admin Dashboard</h1>
+
+      <!-- ================= USERS MANAGEMENT ================= -->
+      <div class="admin-card">
+        <h3>Manage Users</h3>
+
+        <div class="filter-section">
+          <input type="text" placeholder="Search by name, email, or phone" id="userSearch" />
+        </div>
+
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+              <tr>
+                <td>{{ user.full_name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone or '-' }}</td>
+                <td>{{ user.role }}</td>
+                <td>
+                  {# Promote: super admin → user #}
+                  {% if session.role == 'super_admin' and user.role == 'user' %}
+                    <form method="POST" action="{{ url_for('promote_user', user_id=user.id) }}" style="display:inline;">
+                      <button class="btn-primary">Promote</button>
+                    </form>
+                  {% endif %}
+
+                  {# Demote: super admin → admin #}
+                  {% if session.role == 'super_admin' and user.role == 'admin' %}
+                    <form method="POST" action="{{ url_for('demote_user', user_id=user.id) }}" style="display:inline;">
+                      <button class="btn-secondary">Demote</button>
+                    </form>
+                  {% endif %}
+
+                  {# Delete: super admin → non-super-admin #}
+                  {% if session.role == 'super_admin' and user.role != 'super_admin' %}
+                    <form method="POST" action="{{ url_for('admin_delete_user', user_id=user.id) }}" style="display:inline;">
+                      <button class="btn-secondary" onclick="return confirm('Remove this user?');">Remove</button>
+                    </form>
+                  {% endif %}
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="5">No users found.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ================= BOOKS MANAGEMENT ================= -->
+      <div class="admin-card">
+        <h3>Manage Books</h3>
+
+        <div class="filter-section">
+          <input type="text" placeholder="Search by book name, author, or owner" id="bookSearch" />
+        </div>
+
+        <table class="admin-table" id="booksTable">
+          <thead>
+            <tr>
+              <th>Book</th>
+              <th>Author</th>
+              <th>Owner</th>
+              <th>Price</th>
+              <th>Rent</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for book in books %}
+              <tr>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.owner_name }}</td>
+                <td>BDT {{ book.buy_price }}</td>
+                <td>
+                  {% if book.rent_price %}
+                    BDT {{ book.rent_price }}
+                  {% else %}
+                    N/A
+                  {% endif %}
+                </td>
+                <td>
+                  <form method="POST" action="{{ url_for('admin_delete_book', book_id=book.id) }}">
+                    <button class="btn-secondary" onclick="return confirm('Delete book?');">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="6">No books found.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+{% endblock %}

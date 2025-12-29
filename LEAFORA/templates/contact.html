@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}LEAFORA | HOME{% endblock %}
+
+{% block content %}
+
+<section class="contact-section">
+    <div class="container">
+
+        <h1 class="page-title">Contact Us</h1>
+        <p class="page-subtitle">We’d love to hear from you! Send us a message and we’ll get back to you as soon as possible.</p>
+
+        <div class="contact-container">
+
+            <!-- Contact Form -->
+            <div class="contact-form-card">
+                <h3>Send a Message</h3>
+                <form id="contactForm">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="Your Name" required>
+
+                    <label>Email</label>
+                    <input type="email" placeholder="Your Email" required>
+
+                    <label>Subject</label>
+                    <input type="text" placeholder="Subject" required>
+
+                    <label>Message</label>
+                    <textarea placeholder="Write your message..." rows="6" required></textarea>
+
+                    <button type="submit" class="btn-primary">Send Message</button>
+                </form>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="contact-info-card">
+                <h3>Our Contact Information</h3>
+                <p><strong>Email:</strong> support@leafora.com</p>
+                <p><strong>Phone:</strong> +880 1234 567 890</p>
+                <p><strong>Address:</strong> Khulshi 1, Chittagong, Bangladesh</p>
+
+                <h4>Follow Us</h4>
+                <p>
+                    <a href="#">Facebook</a> | 
+                    <a href="#">Twitter</a> | 
+                    <a href="#">Instagram</a>
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<div id="footer"></div>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
+
+
+{% endblock %}

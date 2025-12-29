@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}RECEIPT | LEAFORA{% endblock %}
+
+{% block content %}
+<section class="receipt-section">
+    <div class="container">
+
+        <div class="receipt-card" id="printableReceipt">
+
+            <!-- Logo -->
+            <div class="receipt-logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="LEAFORA Logo">
+                <h1>LEAFORA</h1>
+            </div>
+
+            <hr class="section-divider">
+
+            <!-- Transaction Info -->
+            <div class="transaction-info section">
+                <h3>Transaction Details</h3>
+                <p><strong>Transaction Code:</strong> {{ order.transaction_code }}</p>
+                <p><strong>Date:</strong> {{ order.created_at.strftime('%d %B %Y') }}</p>
+            </div>
+
+            <hr class="section-divider">
+
+            <!-- Buyer Info -->
+            <div class="buyer-info section">
+                <h3>Buyer Information</h3>
+                <p><strong>Name:</strong> {{ session.get('user_name') }}</p>
+                <p><strong>Email:</strong> {{ order.buyer_email if order.buyer_email else '' }}</p>
+                <p><strong>Contact:</strong> {{ order.buyer_phone if order.buyer_phone else '' }}</p>
+                <p><strong>Address:</strong> {{ order.buyer_address if order.buyer_address else '' }}</p>
+            </div>
+
+            <hr class="section-divider">
+
+            <!-- Book Info -->
+            <div class="book-info-receipt section">
+                <h3>Book Details</h3>
+
+                <div class="book-item">
+                    <img src="{{ url_for('static', filename='images/Book/' ~ order.image) }}" alt="Book">
+
+                    <div class="book-desc">
+                        <p><strong>Name:</strong> {{ order.title }}</p>
+                        <p><strong>Author:</strong> {{ order.author }}</p>
+                        <p><strong>Category:</strong> {{ order.category }}</p>
+                        <p><strong>Condition:</strong> {{ order.condition }}</p>
+                        <p><strong>Buy/Rent:</strong> {{ order.order_type|capitalize }}{% if order.order_type=='rent' %} ({{ order.rent_months }} month(s)){% endif %}</p>
+                        <p><strong>Price:</strong> BDT {{ order.total_price }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="section-divider">
+
+            <!-- Total -->
+            <div class="total-box section">
+                <h2>Total Price: BDT {{ order.total_price }}</h2>
+            </div>
+
+            <hr class="section-divider">
+
+            <!-- Owner Info -->
+            <div class="owner-info section">
+                <h3>Owner Contact</h3>
+                <p><strong>Name:</strong> {{ order.owner_name }}</p>
+                <p><strong>Email:</strong> {{ order.owner_email }}</p>
+                <p><strong>Contact:</strong> {{ order.owner_phone }}</p>
+            </div>
+
+            <!-- QR Code & Thank You -->
+            <div class="receipt-footer">
+                <div class="qr-code">
+                    {% if order.qr_code %}
+                        <img src="{{ url_for('static', filename='images/qr/' ~ order.qr_code) }}" alt="Transaction QR" />
+                    {% endif %}
+                </div>
+                <p class="thank-you">Thank you for using <strong>LEAFORA</strong>! We hope you enjoy your book.</p>
+            </div>
+
+            <!-- Print Button -->
+            <div class="receipt-actions no-print">
+                <button onclick="window.print();" class="btn-primary">Download / Print</button>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+{% endblock %}

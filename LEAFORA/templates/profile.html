@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  PROFILE | LEAFORA
+{% endblock %}
+
+{% block content %}
+  <section class="profile-section">
+    <div class="container">
+      <h1 class="page-title" style="margin-bottom: 60px;">My Dashboard</h1>
+
+      <div class="profile-container">
+        <!-- Left Column: User Info & Notifications -->
+        <div class="profile-left">
+          <!-- User Info -->
+          <div class="profile-card">
+            <h3>My Profile</h3>
+            <form id="editProfileForm" method="POST" action="{{ url_for('update_profile') }}">
+              <label>Full Name</label>
+              <input type="text" name="full_name" value="{{ user.full_name }}" required />
+              <label>Email</label>
+              <input type="email" name="email" value="{{ user.email }}" required />
+              <label>Contact</label>
+              <input type="text" name="phone" value="{{ user.phone }}" required />
+              <label>Address</label>
+              <input type="text" name="address" value="{{ user.address }}" required />
+              <button type="submit" class="btn-primary">Update Profile</button>
+            </form>
+          </div>
+
+          <!-- Notifications -->
+          <div class="profile-card">
+            <h3>
+              Notifications<form method="POST" action="{{ url_for('clear_notifications') }}" style="display:inline;">
+                <button class="btn-secondary" style="float:right;">Clear All</button>
+              </form>
+            </h3>
+
+            {% for notification in notifications %}
+              <div class="notification-item">
+                <p>
+                  <strong>Message:</strong> {{ notification.message }}
+                </p>
+                <p>
+                  <strong>From:</strong> {{ notification.sender_name }}
+                </p>
+
+                {% if notification.book_owner_id == user.id and notification.status == 'pending' %}
+                  <!-- Owner: Accept/Reject buttons -->
+                  <div class="notification-actions">
+                    <form method="POST" action="{{ url_for('accept_order', order_id=notification.order_id) }}" style="display:inline;">
+                      <button class="btn-primary">Accept</button>
+                    </form>
+                    <form method="POST" action="{{ url_for('reject_order', order_id=notification.order_id) }}" style="display:inline;">
+                      <button class="btn-secondary">Reject</button>
+                    </form>
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+
+          <!-- My Orders (as Buyer) -->
+          <!-- My Orders -->
+          <div class="profile-card">
+            <h3>My Orders</h3>
+            <table class="orders-table">
+              <thead>
+                <tr>
+                  <th>Book</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in orders %}
+                  <tr style="cursor:pointer;" onclick="window.location.href='{{ url_for('receipt', order_id=order.id) }}'">
+                    <td>{{ order.book_title }}</td>
+                    <td>{{ order.order_type|capitalize }}</td>
+                    <td>{{ order.status|capitalize }}</td>
+                    <td>BDT {{ order.total_price }}</td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td colspan="4">No orders found.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right Column: Add Book & Listed Books -->
+        <div class="profile-right">
+          <!-- Add Book -->
+          <!-- Add Book -->
+          <div class="profile-card">
+            <h3>Add New Book</h3>
+
+            <form method="POST" action="{{ url_for('add_book') }}" enctype="multipart/form-data">
+              <label>Book Name</label>
+              <input type="text" name="title" required />
+
+              <label>Author</label>
+              <input type="text" name="author" required />
+
+              <label>Category</label>
+              <input type="text" name="category" required />
+
+              <label>Description</label>
+              <textarea name="description" rows="4"></textarea>
+
+              <label>Condition</label>
+              <select name="condition" required>
+                <option value="Like New">Like New</option>
+                <option value="Good">Good</option>
+                <option value="Used">Used</option>
+              </select>
+
+              <label>Sell Price (BDT)</label>
+              <input type="number" name="sell_price" required />
+
+              <label>Rent Price (BDT / month)</label>
+              <input type="number" name="rent_price" />
+
+              <label>Location</label>
+              <input type="text" name="location" required />
+
+              <label>Book Cover</label>
+              <input type="file" name="cover_image" accept="image/*" />
+
+              <button type="submit" class="btn-primary">Add Book</button>
+            </form>
+          </div>
+
+          <!-- Listed Books -->
+          <div class="profile-card">
+            <h3>My Listed Books</h3>
+            <table class="books-table" id="booksTable">
+              <thead>
+                <tr>
+                  <th>Book</th>
+                  <th>Price</th>
+                  <th>Rent Price</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for book in user_books %}
+                  <tr>
+                    <td>{{ book.title }}</td>
+                    <td>BDT {{ book.sell_price }}</td>
+                    <td>
+                      {% if book.rent_price %}
+                        BDT {{ book.rent_price }}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                    <td>
+                      <a href="{{ url_for('edit_book', book_id=book.id) }}" class="btn-primary" style="padding: 5px 23px;">Edit</a>
+                      <form action="{{ url_for('delete_book', book_id=book.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn-secondary" onclick="return confirm('Are you sure?');">Delete</button>
+                      </form>
+                    </td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td colspan="4">No books listed yet.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Orders for My Books -->
+          <!-- Orders for My Books -->
+          <div class="profile-card">
+            <h3>Orders for My Books</h3>
+            <table class="orders-table">
+              <thead>
+                <tr>
+                  <th>Book</th>
+                  <th>Buyer</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in user_book_orders %}
+                  <tr class="order-row" data-receipt="{{ url_for('receipt', order_id=order.id) }}" style="cursor: pointer;">
+                    <td>{{ order.book_title }}</td>
+                    <td>{{ order.buyer_name }}</td>
+                    <td>{{ order.order_type }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>BDT {{ order.total_price }}</td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td colspan="5">No orders for your books.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .order-row {
+      cursor: pointer;
+    }
+    .orders-table th,
+    .orders-table td {
+      padding: 8px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+    .btn-success {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      margin: 2px;
+      cursor: pointer;
+    }
+    .btn-danger {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      margin: 2px;
+      cursor: pointer;
+    }
+    .btn-info {
+      background-color: #17a2b8;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      margin: 2px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .notification-item {
+      border-bottom: 1px solid #ddd;
+      padding: 8px 0;
+    }
+    .notification-actions button,
+    .notification-actions a {
+      margin-right: 5px;
+    }
+  </style>
+{% endblock %}

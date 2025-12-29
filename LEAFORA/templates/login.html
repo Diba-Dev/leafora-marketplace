@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Login | LEAFORA{% endblock %}
+
+{% block content %}
+<!-- =========================
+     LOGIN SECTION
+========================== -->
+<section class="auth-section">
+    <div class="container">
+
+        <div class="auth-card">
+            <h2>Welcome Back</h2>
+            <p class="auth-subtitle">
+                Login to continue sharing and discovering books
+            </p>
+
+            <form class="auth-form" method="POST" action="{{ url_for('login') }}">
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input 
+                        type="email" 
+                        name="email"
+                        id="email" 
+                        placeholder="Enter your email"
+                        required
+                    >
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        name="password"
+                        id="password" 
+                        placeholder="Enter your password"
+                        required
+                    >
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit" class="btn-primary full-width">
+                    Login
+                </button>
+
+            </form>
+
+            <!-- Extra Links -->
+            <div class="auth-footer">
+                <p>
+                    Don’t have an account?
+                    <a href="{{ url_for('signup') }}">Create one</a>
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+{% endblock %}

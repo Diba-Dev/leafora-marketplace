@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  LEAFORA | HOME
+{% endblock %}
+
+{% block content %}
+  <!--   =========================
+     HERO SECTION
+==========================   -->
+  <section class="hero">
+    <div class="container hero-content">
+      <!-- Left Content -->
+      <div class="hero-text">
+        <h1>
+          Share Books. <br />
+          Share Knowledge. <br />
+          Save Nature.
+        </h1>
+
+        <p>LEAFORA connects book lovers to buy, sell, rent, or donate books. Make reading affordable and reduce book wastage through sharing.</p>
+
+        <div class="hero-buttons">
+          <a href="{{ url_for('books') }}" class="btn-primary">Find Books</a>
+          {% if not session.user_id %}
+            <a href="{{ url_for('signup') }}" class="btn-secondary">Join Now</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Right Image -->
+      <div class="hero-image">
+        <img src="{{ url_for('static', filename='images/book1.png') }}" alt="Books Illustration" />
+      </div>
+    </div>
+  </section>
+
+  <!--   =========================
+     NEW ARRIVALS SECTION
+==========================   -->
+  <section class="new-arrivals">
+    <div class="container">
+      <div class="section-header">
+        <h2>New Arrivals</h2>
+        <p>Recently added books by our community</p>
+      </div>
+
+      <!-- Horizontal Scroll Wrapper -->
+      <div class="arrival-scroll">
+        {% for book in new_books %}
+          <div class="book-card" onclick="window.location='{{ url_for('book', book_id=book.id) }}'" style="width: 285px;">
+            <img src="{{ url_for('static', filename='images/Book/' ~ book.image or 'default.jpg') }}" alt="Book Cover" />
+            <h3 style="font-family: 'Georgia', serif;">{{ book.title }}</h3>
+            <p class="price">{{ book.buy_price }} BDT</p>
+          </div>
+        {% else %}
+          <p>No books added yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!--   =========================
+     TOP-REVIEWED BOOKS SECTION
+==========================   -->
+  <section class="top-reviewed">
+    <div class="container">
+      <!-- Section Header -->
+      <div class="section-header">
+        <h2 style="margin-bottom: 10px;">Top-Reviewed Books</h2>
+        <p>Books loved by our community</p>
+      </div>
+
+      <!-- Book Cards Grid -->
+      <div class="reviewed-grid">
+        <!-- Book Card 1 -->
+        <div class="reviewed-card">
+          <img src="{{ url_for('static', filename='images/Book/1.jpg') }}" alt="Book Cover" />
+          <h3>The Alchemist</h3>
+          <q style="font-weight: 300;">An inspiring tale about following your dreams and listening to your heart. A must-read for anyone seeking purpose.</q>
+          <p class="reviewer">by John Doe</p>
+          <div class="stars">
+            <p style="color: #F5C50C; font-size:large;">★★★★★</p>
+          </div>
+        </div>
+
+        <!-- Book Card 2 -->
+        <div class="reviewed-card">
+          <img src="{{ url_for('static', filename='images/Book/2.jpg') }}" alt="Book Cover" />
+          <h3>Atomic Habits</h3>
+          <q style="font-weight: 300;">One of the best books on habit formation and personal growth. Highly recommend!</q>
+          <p class="reviewer">by Jane Smith</p>
+          <div class="stars">
+            <p style="color: #F5C50C; font-size:large;">★★★★★</p>
+          </div>
+        </div>
+
+        <!-- Book Card 3 -->
+        <div class="reviewed-card">
+          <img src="{{ url_for('static', filename='images/Book/3.jpg') }}" alt="Book Cover" />
+          <h3>Rich Dad Poor Dad</h3>
+          <q style="font-weight: 300; font-size:large;">A classic on personal finance and investing</q>
+          <p class="reviewer">by David Kim</p>
+          <div class="stars">
+            <p style="color: #F5C50C; font-size:large;">★★★★★</p>
+          </div>
+        </div>
+
+        <!-- Book Card 4 -->
+        <div class="reviewed-card">
+          <img src="{{ url_for('static', filename='images/Book/4.jpg') }}" alt="Book Cover" />
+          <h3>Deep Work</h3>
+          <q style="font-weight: 300;">Specifically one of my favorite lessons learned what "good work" and "good job" means.</q>
+          <p class="reviewer">by Michael Lee</p>
+          <div class="stars">
+            <p style="color: #F5C50C; font-size:large;">★★★★★</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

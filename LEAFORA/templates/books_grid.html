@@ -1,0 +1,43 @@
+<div class="books-grid" style="align-items: center;">
+    {% for book in books %}
+    <div class="book-card classic-card">
+        <img src="{{ url_for('static', filename='images/Book/' ~ book.image) }}" alt="Book">
+        <div class="book-info">
+            <h3>{{ book['title'] }}</h3>
+            <p class="author">by {{ book['author'] }}</p>
+
+            <p class="meta">
+                <span>Category:</span> {{ book['category'] }}
+                <span>Condition:</span> {{ book['condition'] }}
+            </p>
+
+            <p class="location">{{ book['location'] }}</p>
+
+            <div class="pricing">
+                <span class="sell">Buy: {{ book['buy_price'] }} BDT</span>
+                {% if book['rent_price'] %}
+                <span class="rent">Rent: {{ book['rent_price'] }} BDT / month</span>
+                {% else %}
+                <span class="rent muted">Rent: Not Available</span>
+                {% endif %}
+            </div>
+
+            <div class="book-actions">
+                <a href="{{ url_for('book', book_id=book['id']) }}" class="btn-secondary">Details</a>
+                <a href="{{ url_for('book', book_id=book['id']) }}" class="btn-primary">Buy</a>
+                {% if book['rent_price'] %}
+                <a href="{{ url_for('book', book_id=book['id']) }}" class="btn-primary">Rent</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if books|length == 0 %}
+<p>No books found matching your criteria.</p>
+{% endif %}
+
+{% if books|length == 0 %}
+<p>No books found matching your criteria.</p>
+{% endif %}

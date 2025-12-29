@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  BOOKS | LEAFORA
+{% endblock %}
+
+{% block content %}
+  <section class="find-books" style="display: flex; flex-direction: column; align-items: center; padding: 60px 0; padding-left: 100px;">
+    <div class="container">
+      <h2 class="section-title classic-title">Find Your Next Book</h2>
+      <p class="section-subtitle">Buy, rent, or explore books shared by the LEAFORA community</p>
+
+      <!-- Filter Form -->
+      <form id="filterForm" class="filter-bar classic-filter">
+        <input type="text" name="name" placeholder="Book name" value="{{ name }}" />
+        <input type="text" name="author" placeholder="Author" value="{{ author }}" />
+
+        <select name="category">
+          <option value="">Category</option>
+          {% for cat in categories %}<option value="{{ cat }}" {% if category == cat %}selected{% endif %}>{{ cat }}</option>{% endfor %}
+        </select>
+
+        <div class="price-range">
+          <label>
+            Max Price:
+            <span id="priceValue">{{ max_price }} BDT</span>
+          </label>
+          <input type="range" min="0" max="1500" value="{{ max_price }}" id="priceRange" name="max_price" />
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 120px;">Apply</button>
+      </form>
+
+      <!-- Books Grid -->
+      <div class="book-grid classic-grid" id="booksGrid">
+        {% include 'books_grid.html' %}
+      </div>
+    </div>
+  </section>
+{% endblock %}
